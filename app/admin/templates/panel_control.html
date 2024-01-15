@@ -1,0 +1,123 @@
+{% extends "base_admin.html"%}
+{% block title %}Admin - Menu{% endblock %}
+{% block content %}
+
+<div id="admin" class="container-fluid wow fadeIn">
+    <h2 class="text-center mt-3">{{_('Product Inventory Management.')}} <span class="text-right">Total:
+            {{total}}</span> </h2><br>
+    <div class="text-right">
+        <!-- <h4>Total: {{total}}</h4> -->
+
+        <a class="btn btn-primary" id="agregar" href="{{url_for('admin.agregar')}}">+ {{_('Add new')}}</a>
+    </div>
+    <br>
+    <div class="text-center">
+        {{ pagination.info }}
+    </div><hr>
+    <div class="d-flex justify-content-center">
+        {{ pagination.links }}
+
+    </div>
+    <div class="table-responsive-xl">
+        <table class="table table table-striped table-dark table-bordered table-hover">
+            <thead>
+                <tr class="text-center">
+                    <th class="id">ID</th>
+                    <th class="imagen">{{_("Image")}}</th>
+                    <th class="nombre">{{_("Name")}}</th>
+                    <th class="precio">{{_("Price")}}</th>
+                    <th class="descripcion">{{_("Description")}}</th>
+                    <th class="tipo">{{_("Category")}}</th>
+                    <th>{{_("Actions")}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items_menu %}
+                <tr>
+                    <form action="{{url_for('admin.modificar',item_id=item.id)}}" method="post">
+                        <td class="text-center">{{item.id}}
+                            <div id="carga_imagen{{item.id}}">
+                                {% if item.imagen.startswith('http') %}
+                                <img src="{{ item.imagen }}" alt="template by..." width="50">
+                                {% else %}
+                                <img src="{{ url_for('static', filename='img/menu/' + item.imagen) }}"
+                                    alt="template by---" width="50">
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td><textarea type="text" class="form-control" rows="3" name="imagen" id="imagen{{item.id}}"
+                                oninput="cargarImg({{item.id}});" required>{{item.imagen}}</textarea>
+                        </td>
+                        <script>
+                            function cargarImg(id) {
+                                let url_img = document.getElementById('imagen'+id).value;
+                                document.getElementById('carga_imagen'+id).innerHTML = '<img src="' + url_img + '" alt="..." width="50">';
+                            }
+                        </script>
+
+                        <td><textarea type="text" rows="3"  class="form-control" name="nombre" required>{{item.nombre}}</textarea>
+                        </td>
+                        <td><textarea type="number" class="form-control" name="precio"
+                                required>{{item.precio}}</textarea>
+                        </td>
+                        <td><textarea class="form-control" name="descripcion" rows="3"
+                                required>{{item.descripcion}}</textarea>
+                        </td>
+                        <td>{{item.categoria}}<select class="form-control" id="categoria" name="categoria" required>
+                                <!-- <option value="null">Seleccione una opción</option> -->
+                                <option value="Entrada" {% if item.categoria=='Entrada' %} selected {% endif %}>{{_("Entries")}}</option>
+                                <option value="Principal" {% if item.categoria=='Principal' %} selected {% endif %}>
+                                    {{_("Main Courses")}}</option>
+                                <option value="Compartir" {% if item.categoria=='Compartir' %} selected {% endif %}>
+                                    {{_("Dishes to share")}}</option>
+                                <option value="Postre" {% if item.categoria=='Postre' %} selected {% endif %}>{{_("Desserts")}}
+                                </option>
+                                <option value="Bebida" {% if item.categoria=='Bebida' %} selected {% endif %}>{{_("Drinks")}}
+                                </option>
+                            </select></td>
+                        <td>
+                            <div  class="acciones_control">
+                                <button type="submit" class="btn btn-success btn-sm mr-2">{{_("Update")}}</button>
+                                <button class="btn btn-danger btn-sm" style="color: #fff;"><a data-toggle="modal" data-target="#modalEliminar{{item.id}}"
+                                    >{{_("Delete")}}</a></button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalEliminar{{item.id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="modalEliminar{{item.id}}Title" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content" style="color: black;">
+                                            <div class="modal-header bg-danger">
+                                                <h5 class="modal-title" id="modalEliminar{{item.id}}Title">{{_("Are you sure you want to delete the item")}} '{{item.id}}: {{item.nombre}}'?</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">{{_("Cancel")}}</button>
+                                                <a href=" {{url_for('admin.eliminar',item_id=item.id)}}"
+                                                    class="btn btn-primary">{{_("Confirm")}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-center">
+        {{ pagination.links }}
+
+    </div>
+</div>
+
+
+
+{% endblock %}

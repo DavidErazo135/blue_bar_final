@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Blue Bull Bar - Login/Register{% endblock %}
+{% block content %}
+
+<!-- header -->
+<header id="home" class="header">
+    <div class="overlay text-white text-center"><br><br>
+        <h1 class="display-2 font-weight-bold my-3">Blue Bull Bar</h1>
+        <h2 class="display-4 mb-5">{{_('Always fresh &amp; Delightful')}}</h2>
+        <a class="btn btn-lg btn-primary">{{_('Access your account or register')}}</a>
+        <hr>
+        <!-- Mostrar mendajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="">
+            {% for category, message  in messages %}
+            <div class="alert alert-{{category}}">
+                <li>{{ message }}</li>
+            </div>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+</header>
+
+<div id="about" class="container-fluid wow fadeIn" id="about">
+    <div class="row">
+        <!-- Columna de Registro -->
+        <div class="col-lg-6 mb-5 mt-3 text-center ">
+            <div class="container pb-5 pt-5" style="background-color: rgba(255, 255, 255, 0.05);">
+                <div style="margin: 10px 10%; ">
+
+                    <h2 class="mb-4">{{_('Sign up')}}</h2>
+
+
+                    <form method="post" action="{{ url_for('auth.login_registro') }}" novalidate autocomplete="off">
+                        {{ form_registro.csrf_token }}
+
+                        <div class="form-group">
+                            <label for="nombre">{{_('Name')}} {{ form_registro.nombre(class="form-control",size=35) }}
+                            <div>
+                                {% if form_registro.nombre.errors %}
+                                <div class="alert alert-danger">{{ form_registro.nombre.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="celular">{{_('Phone')}} {{ form_registro.celular(class="form-control",size=35) }}
+                            <div>
+                                {% if form_registro.celular.errors %}
+                                <div class="alert alert-danger">{{ form_registro.celular.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo">{{_('Email')}} {{ form_registro.correo(class="form-control",size=35) }}
+                            <div>
+                                {% if form_registro.correo.errors %}
+                                <div class="alert alert-danger">{{ form_registro.correo.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">{{_('Password')}} {{ form_registro.password(class="form-control",oninput="validarContraseñas();",size=35) }}
+                            <div>
+                                {% if form_registro.password.errors %}
+                                <div class="alert alert-danger">{{ form_registro.password.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password_conf">{{_('Confirm password')}} {{ form_registro.password_conf(class="form-control",oninput="validarContraseñas();",size=35) }}
+                            <div>
+                                {% if form_registro.password_conf.errors %}
+                                <div class="alert alert-danger">{{ form_registro.password_conf.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="mostrar_contraseña_r" onchange="mostrarOcultarContraseñas()">
+                            <label class="form-check-label" for="mostrar_contraseña_r" >{{_('Show passwords')}}</label>
+                        </div>
+                        <div class="text-danger" id="error-message" style="display: none;"></div>
+                        <br>
+                        <div class="justify-content-center">
+                            {{form_registro.submit_registro(class="btn btn-primary", disabled=true)}}</div>
+                    </form>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <script>
+            // Comprueba que las dos contraseñas son iguales y muestra una alerta si no lo están
+            function validarContraseñas() {
+                let password1 = document.getElementById("password").value;
+                let password2 = document.getElementById("password_conf").value;
+                if (password1 != password2) {
+                    document.getElementById("error-message").style.display = 'block';
+                    document.getElementById("error-message").innerHTML = "{{_('Passwords do not match.')}}";
+                    document.getElementById("submit_registro").disabled = true;
+                } else {
+                    document.getElementById("error-message").style.display = 'none';
+                    document.getElementById("error-message").innerHTML = "";
+                    document.getElementById("submit_registro").disabled = false;
+                }
+            }
+
+            function mostrarOcultarContraseñas() {
+                let checkbox = document.getElementById("mostrar_contraseña_r");
+                let mostrarContraseñas = checkbox.checked;
+        
+                let camposContraseña = document.getElementById('password');
+                camposContraseña.type = mostrarContraseñas ? "text" : "password";
+                let camposContraseña2 = document.getElementById('password_conf');
+                camposContraseña2.type = mostrarContraseñas ? "text" : "password";
+            }
+            
+        </script>
+
+        <!-- Columna de Inicio de Sesión -->
+        <div class="col-lg-6 mb-5 mt-3 text-center">
+            <div class="container pb-5 pt-5" style="background-color: rgba(255, 255, 255, 0.05);">
+                <div style="margin: 10px 10%; ">
+                    <div style="margin: 10px 10%;">
+                        <h2 class="mb-4">{{_('Sign in')}}</h2>
+                        <form action="{{ url_for('auth.login_registro') }}" method="post" autocomplete="off" novalidate
+                            autocomplete="off">
+                            {{ form_login.csrf_token }}
+
+                            <div class="form-group">
+                                <label for="email">{{_('Email')}}</label> {{ form_login.email(class="form-control",size=35) }}
+                                <div>
+                                    {% if form_login.email.errors %}
+                                    <div class="alert alert-danger">{{ form_login.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password_l">{{_('Password')}} {{ form_login.password_l(class="form-control",size=35) }}
+                                <div>
+                                    {% if form_login.password_l.errors %}
+                                    <div class="alert alert-danger">{{ form_login.password_l.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="justify-content-center">
+                                {{form_login.submit_login(class="btn btn-primary")}}</div>
+                        </form>
+                        <br>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="mostrar_contraseña_l" onchange="mostrarOcultarContraseña()">
+                            <label class="form-check-label" for="mostrar_contraseña_l" >{{_('Show password')}}</label>
+                            
+                        </div><hr>
+                        <a href="{{ url_for('auth.reset_request') }}" class="btn btn-link" style="color: cornflowerblue;">{{_('Did you forget your password?')}}</a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <hr>
+
+    <script>
+        function mostrarOcultarContraseña() {
+            let checkbox = document.getElementById("mostrar_contraseña_l");
+            let mostrarContraseñas = checkbox.checked;
+    
+            let camposContraseña = document.getElementById('password_l');
+            camposContraseña.type = mostrarContraseñas ? "text" : "password";
+        }
+    </script>
+    {% endblock %}

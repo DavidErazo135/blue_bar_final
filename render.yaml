@@ -1,0 +1,11 @@
+services:
+  - name: web
+    env:
+      - key: FLASK_APP
+        value: run.py
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URI
+        value: "sqlite:///app/database/bluebullbar.db"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
